@@ -1,7 +1,10 @@
 "use server";
 
-const SAVE_MEDIA_MUTATION = /* GRAPHQL */`
-  mutation SAVE_MEDIA_MUTATION {
+import { getClient } from "@/ApolloClient";
+import { gql } from "@/graphql/gql";
+
+const SAVE_MEDIA_QUERY = gql(` 
+  mutation SAVE_MEDIA_QUERY {
     SaveMediaListEntry(mediaId:1) {
       media {
         title {
@@ -10,30 +13,14 @@ const SAVE_MEDIA_MUTATION = /* GRAPHQL */`
       }
     }
   }
-`
+`);
 
 export default async function updater() {
-  const token = process.env.AUTH_TOKEN;
-  const url = "https://graphql.anilist.co";
-  const options = {
-    method: "POST",
-    headers: {
-      Authorization: token ? "Bearer " + token : "",
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-    body: JSON.stringify({
-      query: SAVE_MEDIA_MUTATION,
-    }),
-  };
+  const { data } = await getClient().mutate({
+    mutation: SAVE_MEDIA_QUERY,
+  });
 
-  fetch(url, options).then(handleResponse, handleError);
+  console.log(data);
 
-  function handleError(error: any) {
-    console.log(error);
-  }
-
-  function handleResponse(response: any) {
-    console.log(response);
-  }
+  return data;
 }
