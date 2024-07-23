@@ -1,9 +1,7 @@
 "use server";
 
-import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
 import { getClient } from "@/ApolloClient";
 import { gql } from "@/graphql/gql";
-import { HttpLink } from "@apollo/client";
 
 const SAVE_MEDIA_QUERY = gql(` 
   mutation SAVE_MEDIA_QUERY {
