@@ -1,25 +1,6 @@
-import { getClient } from "@/ApolloClient";
-import { gql } from "@/graphql/gql";
+'use client'
 
-const TEST_QUERY = gql(`
-  query TEST_QUERY {
-    MediaListCollection(userName: "felock", type: ANIME) {
-      lists {
-        entries {
-          media {
-            id
-            status
-            title {
-              native
-              romaji
-              english
-            }
-          }
-        }
-      }
-    }
-  }
-`);
+import updater from "./updater";
 
 export default async function Home() {
   // const { data } = await getClient().query({
@@ -32,6 +13,6 @@ export default async function Home() {
   // const medium = entries != undefined ? Array.from(entries) : null;
   return <main>
     <h1>AniList Updater</h1>
-
+    <button onClick={ () => { updater(); }} >Update</button>
   </main>;
 }

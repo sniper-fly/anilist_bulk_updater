@@ -1,19 +1,47 @@
-import { HttpLink } from "@apollo/client";
+import { ApolloLink, concat, HttpLink } from "@apollo/client";
 import {
   registerApolloClient,
   ApolloClient,
   InMemoryCache,
 } from "@apollo/experimental-nextjs-app-support";
 
+// const authMiddleware = new ApolloLink((operation, forward) => {
+//   // add the authorization to the headers
+//   operation.setContext(({ headers = {} }) => {
+//     console.log(headers);
+
+//     // return {
+//     //   headers: {
+//     //     ...headers,
+//     //     authorization: localStorage.getItem("token") || null,
+//     //   },
+//     // };
+//   });
+
+//   return forward(operation);
+// });
+
+// const logLink = new ApolloLink((operation, forward) => {
+//   console.info("request", operation.getContext());
+//   return forward(operation).map((result) => {
+//     console.info("response", operation.getContext());
+//     return result;
+//   });
+// });
+
+const httpLink = new HttpLink({ uri: "https://graphql.anilist.co" });
+
 export const { getClient, query, PreloadQuery } = registerApolloClient(() => {
+  const token = process.env.AUTH_TOKEN;
+  const cookie = process.env.COOKIE;
+
   return new ApolloClient({
     cache: new InMemoryCache(),
-    link: new HttpLink({
-      // this needs to be an absolute url, as relative urls cannot be used in SSR
-      uri: "https://graphql.anilist.co",
-      // you can disable result caching here if you want to
-      // (this does not work if you are rendering your page with `export const dynamic = "force-static"`)
-      // fetchOptions: { cache: "no-store" },
-    }),
+    // link: concat(logLink, httpLink),
+    link: httpLink,
+    headers: {
+      cookie: cookie ? cookie : "",
+      authorization: token ? `Bearer ${token}` : "",
+    },
   });
 });

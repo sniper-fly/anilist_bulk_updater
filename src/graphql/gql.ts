@@ -13,8 +13,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\n  query TEST_QUERY {\n    MediaListCollection(userName: \"felock\", type: ANIME) {\n      lists {\n        entries {\n          media {\n            id\n            status\n            title {\n              native\n              romaji\n              english\n            }\n          }\n        }\n      }\n    }\n  }\n": types.Test_QueryDocument,
-    "\n  query USER_ANIME_LIST($userName: String!) {\n    MediaListCollection(userName: $userName, type: ANIME) {\n      lists {\n        entries {\n          media {\n            id\n            title {\n              native\n              romaji\n              english\n            }\n            coverImage {\n              extraLarge\n              large\n            }\n          }\n        }\n      }\n    }\n  }\n": types.User_Anime_ListDocument,
+    " \n  mutation SAVE_MEDIA_QUERY {\n    SaveMediaListEntry(mediaId:1) {\n      media {\n        title {\n          native\n        }\n      }\n    }\n  }\n": types.Save_Media_QueryDocument,
 };
 
 /**
@@ -34,11 +33,7 @@ export function gql(source: string): unknown;
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query TEST_QUERY {\n    MediaListCollection(userName: \"felock\", type: ANIME) {\n      lists {\n        entries {\n          media {\n            id\n            status\n            title {\n              native\n              romaji\n              english\n            }\n          }\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query TEST_QUERY {\n    MediaListCollection(userName: \"felock\", type: ANIME) {\n      lists {\n        entries {\n          media {\n            id\n            status\n            title {\n              native\n              romaji\n              english\n            }\n          }\n        }\n      }\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  query USER_ANIME_LIST($userName: String!) {\n    MediaListCollection(userName: $userName, type: ANIME) {\n      lists {\n        entries {\n          media {\n            id\n            title {\n              native\n              romaji\n              english\n            }\n            coverImage {\n              extraLarge\n              large\n            }\n          }\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query USER_ANIME_LIST($userName: String!) {\n    MediaListCollection(userName: $userName, type: ANIME) {\n      lists {\n        entries {\n          media {\n            id\n            title {\n              native\n              romaji\n              english\n            }\n            coverImage {\n              extraLarge\n              large\n            }\n          }\n        }\n      }\n    }\n  }\n"];
+export function gql(source: " \n  mutation SAVE_MEDIA_QUERY {\n    SaveMediaListEntry(mediaId:1) {\n      media {\n        title {\n          native\n        }\n      }\n    }\n  }\n"): (typeof documents)[" \n  mutation SAVE_MEDIA_QUERY {\n    SaveMediaListEntry(mediaId:1) {\n      media {\n        title {\n          native\n        }\n      }\n    }\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};
