@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "compile": "graphql-codegen",
-    "lint": "next lint"
+    "lint": "next lint",
+    "debug": "NODE_OPTIONS='--inspect' next dev"
   },
   "dependencies": {
     "@apollo/client": "^3.11.0",
