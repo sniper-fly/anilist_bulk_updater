@@ -2,7 +2,7 @@
 
 import updater from "./updater";
 
-export default async function Home() {
+export default function Home() {
   // const { data } = await getClient().query({
   //   query: TEST_QUERY,
   // });
