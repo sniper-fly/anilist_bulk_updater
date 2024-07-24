@@ -1,18 +1,10 @@
-"use client";
-
-import updater from "./updater";
+import UpdateButton from "./updateButton";
 
 export default function Home() {
-  function handleClick() {
-    (async () => {
-      await updater();
-    })();
-  }
-
   return (
     <main>
       <h1>AniList Updater</h1>
-      <button onClick={handleClick}>Update</button>
+      <UpdateButton />
     </main>
   );
 }
