@@ -13,6 +13,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
+    "\n  query LIST_POPULAR_ANIME($page: Int) {\n    Page(page: $page, perPage: 50) {\n      media(sort: POPULARITY_DESC) {\n        id\n        title {\n          native\n        }\n      }\n    }\n  }\n": types.List_Popular_AnimeDocument,
     " \n  mutation SAVE_MEDIA_QUERY {\n    SaveMediaListEntry(mediaId:1) {\n      media {\n        title {\n          native\n        }\n      }\n    }\n  }\n": types.Save_Media_QueryDocument,
 };
 
@@ -30,6 +31,10 @@ const documents = {
  */
 export function gql(source: string): unknown;
 
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query LIST_POPULAR_ANIME($page: Int) {\n    Page(page: $page, perPage: 50) {\n      media(sort: POPULARITY_DESC) {\n        id\n        title {\n          native\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query LIST_POPULAR_ANIME($page: Int) {\n    Page(page: $page, perPage: 50) {\n      media(sort: POPULARITY_DESC) {\n        id\n        title {\n          native\n        }\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
