@@ -21,10 +21,6 @@ const LIST_POPULAR_ANIME = gql(`
   }
 `);
 
-// {
-//   variables: { page: 1 },
-// }
-
 export default function Home() {
   const [listAnime, { loading, error, data }] =
     useLazyQuery(LIST_POPULAR_ANIME);
@@ -39,20 +35,6 @@ export default function Home() {
       }
     })();
   }, []);
-
-  // const medium = data?.Page?.media;
-
-  // if (error || !medium) return <p>Error</p>;
-
-  // const animeInfo = [];
-  // for (const media of medium) {
-  //   if (!media || !media.id || !media?.title?.native) continue;
-
-  //   animeInfo.push({
-  //     id: media.id,
-  //     title: media.title.native,
-  //   });
-  // }
 
   return (
     <main className="flex flex-row">
