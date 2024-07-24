@@ -11,7 +11,7 @@ import { AnimeInfo } from "./types";
 const LIST_POPULAR_ANIME = gql(`
   query LIST_POPULAR_ANIME($page: Int) {
     Page(page: $page, perPage: 50) {
-      media(sort: POPULARITY_DESC) {
+      media(sort: POPULARITY_DESC, type: ANIME, countryOfOrigin: JP) {
         id
         title {
           native
@@ -27,13 +27,22 @@ export default function Home() {
   const [animeList, setAnimeList] = useState<AnimeInfo[]>([]);
 
   useEffect(() => {
+    let ignore = false;
+
     (async () => {
-      for (let i = 1; i <= 5; i++) {
+      for (let i = 1; i <= 10; i++) {
+        console.log(i);
         const { data } = await listAnime({ variables: { page: i } });
         if (!data) return;
-        setAnimeList((prev) => [...prev, ...extractAnimeInfo(data)]);
+        if (!ignore) {
+          setAnimeList((prev) => [...prev, ...extractAnimeInfo(data)]);
+        }
       }
     })();
+
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   return (
@@ -47,10 +56,10 @@ export default function Home() {
       <div className="w-2/3 h-screen p-10">
         <ScrollArea className="h-full rounded-md border">
           <div className="p-4">
-            {animeList.map((anime) => (
+            {animeList.map((anime, i) => (
               <>
                 <div key={anime.id} className="my-2 text-sm">
-                  {anime.title}
+                  {(i + 1) + ": " + anime.title}
                 </div>
               </>
             ))}
