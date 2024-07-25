@@ -40,7 +40,7 @@ export default function Home() {
 
   async function loadMoreAnime() {
     const { data } = await listAnime({
-      variables: { page: offset + 1, sort: MediaSort.ScoreDesc },
+      variables: { page: offset + 1, sort: MediaSort.PopularityDesc },
     });
     if (!data) return;
     setAnimeList((prev) => [...prev, ...extractAnimeInfo(data)]);
@@ -75,7 +75,6 @@ export default function Home() {
     setProgress(0.1);
 
     const intervalId = setInterval(() => {
-      // jsでの割り算小数点どうなる？
       if (progress >= 100) {
         clearInterval(intervalId);
         return;
