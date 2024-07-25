@@ -1,7 +1,7 @@
 "use client";
 
+import updater from "./updater";
 import { gql } from "@/graphql";
-import UpdateButton from "./updateButton";
 import { useLazyQuery } from "@apollo/client";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useEffect, useState } from "react";
@@ -10,6 +10,7 @@ import { AnimeInfo } from "./types";
 import { MediaSort } from "@/graphql/graphql";
 import { useInView } from "react-intersection-observer";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { Input } from "@/components/ui/input";
 
@@ -61,6 +62,16 @@ export default function Home() {
     setLastRank(Math.max(firstRank, last));
   }
 
+  function handleClick() {
+    const animeIds = animeList
+      .slice(firstRank - 1, lastRank)
+      .map((anime) => anime.id);
+
+    (async () => {
+      await updater(animeIds);
+    })();
+  }
+
   return (
     <>
       {error && (
@@ -76,11 +87,11 @@ export default function Home() {
       )}
 
       <main className="flex flex-row">
-        <div className="w-1/3 p-10">
+        <div className="w-1/3 p-10 flex-col space-y-5">
           <header className="py-4 text-2xl text-center font-bold">
             AniList Updater
           </header>
-          <div className="flex my-5 flex-row space-x-4 items-center justify-center text-xl">
+          <div className="flex flex-row space-x-4 items-center justify-center text-xl">
             <Input
               type="number"
               className="w-24"
@@ -95,7 +106,9 @@ export default function Home() {
               onChange={handleLastRankChange}
             />
           </div>
-          <UpdateButton animeIds={animeList.map((anime) => anime["id"])} />
+          <div className="flex justify-center">
+            <Button onClick={handleClick}>Update</Button>
+          </div>
         </div>
         <div className="w-2/3 h-screen p-10">
           <ScrollArea className="h-full rounded-md border">
