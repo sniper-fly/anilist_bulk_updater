@@ -6,8 +6,8 @@ import { ApolloWrapper } from "@/ApolloWrapper";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "mirofaker",
-  description: "AniList organizer",
+  title: "AniList Updater",
+  description: "mirofaker's AniList Updater",
 };
 
 export default function RootLayout({
