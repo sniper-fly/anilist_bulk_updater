@@ -21,9 +21,6 @@ const authLink = setContext((_, { headers }) => {
 });
 
 export const { getClient, query, PreloadQuery } = registerApolloClient(() => {
-  const token = process.env.AUTH_TOKEN;
-  const cookie = process.env.COOKIE;
-
   return new ApolloClient({
     cache: new InMemoryCache(),
     link: authLink.concat(httpLink),
