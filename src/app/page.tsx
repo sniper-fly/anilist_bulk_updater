@@ -13,6 +13,8 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
+import { MUTATION_INTERVAL } from "./constants";
 
 const LIST_POPULAR_ANIME = gql(`
   query LIST_POPULAR_ANIME($page: Int, $sort: [MediaSort]) {
@@ -34,6 +36,7 @@ export default function Home() {
   const [animeList, setAnimeList] = useState<AnimeInfo[]>([]);
   const [firstRank, setFirstRank] = useState(1);
   const [lastRank, setLastRank] = useState(20);
+  const [progress, setProgress] = useState(0);
 
   async function loadMoreAnime() {
     const { data } = await listAnime({
@@ -67,8 +70,24 @@ export default function Home() {
       .slice(firstRank - 1, lastRank)
       .map((anime) => anime.id);
 
+    // progress が0かどうかで更新中かどうかを判断しているため、
+    // クリックされた瞬間にprogressを0.1にするワークアラウンド
+    setProgress(0.1);
+
+    const intervalId = setInterval(() => {
+      // jsでの割り算小数点どうなる？
+      if (progress >= 100) {
+        clearInterval(intervalId);
+        return;
+      }
+      const increment = 100 / (lastRank - firstRank + 1);
+      setProgress((prev) => Math.min(prev + increment, 100));
+    }, MUTATION_INTERVAL);
     (async () => {
       await updater(animeIds);
+      alert("Update Complete");
+      clearInterval(intervalId);
+      setProgress(0);
     })();
   }
 
@@ -88,9 +107,20 @@ export default function Home() {
 
       <main className="flex flex-row">
         <div className="w-1/3 p-10 flex-col space-y-5">
-          <header className="py-4 text-2xl text-center font-bold">
+          <header className="pt-4 text-2xl text-center font-bold">
             AniList Updater
           </header>
+
+          <div className="flex flex-row justify-center space-x-1">
+            <p>for</p>
+            <a
+              href="https://anilist.co/user/felock/"
+              className="hover:text-blue-700 transition duration-200"
+            >
+              mirofaker
+            </a>
+          </div>
+
           <div className="flex flex-row space-x-4 items-center justify-center text-xl">
             <Input
               type="number"
@@ -106,9 +136,14 @@ export default function Home() {
               onChange={handleLastRankChange}
             />
           </div>
+
           <div className="flex justify-center">
-            <Button onClick={handleClick}>Update</Button>
+            <Button disabled={progress != 0} onClick={handleClick}>
+              Update
+            </Button>
           </div>
+
+          <Progress value={progress} />
         </div>
         <div className="w-2/3 h-screen p-10">
           <ScrollArea className="h-full rounded-md border">

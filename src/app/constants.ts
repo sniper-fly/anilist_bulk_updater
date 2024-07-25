@@ -1,0 +1,1 @@
+export const MUTATION_INTERVAL = 2000;

@@ -2,8 +2,7 @@
 
 import { getClient } from "@/ApolloClient";
 import { gql } from "@/graphql/gql";
-
-const MUTATION_INTERVAL = 2000;
+import { MUTATION_INTERVAL } from "./constants";
 
 const SAVE_MEDIA_QUERY = gql(` 
   mutation SAVE_MEDIA_QUERY($mediaId: Int!) {
@@ -18,27 +17,20 @@ const SAVE_MEDIA_QUERY = gql(`
 `);
 
 export default async function updater(ids: number[]) {
-  let currentIndex = 0;
+  return new Promise<void>((resolve) => {
+    let currentIndex = 0;
 
-  const intervalId = setInterval(() => {
-    if (currentIndex < ids.length) {
-      executeMutation(ids[currentIndex], intervalId);
-      currentIndex++;
-    } else {
-      clearInterval(intervalId);
-    }
-  }, MUTATION_INTERVAL);
-}
-
-async function executeMutation(id: number, intervalId: NodeJS.Timeout) {
-  try {
-    const { data } = await getClient().mutate({
-      mutation: SAVE_MEDIA_QUERY,
-      variables: { mediaId: id },
-    });
-    console.log(data);
-  } catch (error) {
-    console.error(`Error executing mutation for id ${id}:`, error);
-    clearInterval(intervalId);
-  }
+    const intervalId = setInterval(() => {
+      if (currentIndex < ids.length) {
+        getClient().mutate({
+          mutation: SAVE_MEDIA_QUERY,
+          variables: { mediaId: ids[currentIndex] },
+        });
+        currentIndex++;
+      } else {
+        clearInterval(intervalId);
+        resolve();
+      }
+    }, MUTATION_INTERVAL);
+  });
 }
