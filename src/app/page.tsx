@@ -11,6 +11,7 @@ import { MediaSort } from "@/graphql/graphql";
 import { useInView } from "react-intersection-observer";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { Input } from "@/components/ui/input";
 
 const LIST_POPULAR_ANIME = gql(`
   query LIST_POPULAR_ANIME($page: Int, $sort: [MediaSort]) {
@@ -30,6 +31,8 @@ export default function Home() {
   const { ref, inView } = useInView();
   const [listAnime, { loading, error }] = useLazyQuery(LIST_POPULAR_ANIME);
   const [animeList, setAnimeList] = useState<AnimeInfo[]>([]);
+  const [firstRank, setFirstRank] = useState(1);
+  const [lastRank, setLastRank] = useState(20);
 
   async function loadMoreAnime() {
     const { data } = await listAnime({
@@ -45,6 +48,18 @@ export default function Home() {
       loadMoreAnime();
     }
   }, [inView]);
+
+  function handleFirstRankChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const num = event.target.value as unknown as number;
+    const first = Math.max(1, num);
+    setFirstRank(Math.min(first, lastRank));
+  }
+
+  function handleLastRankChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const num = event.target.value as unknown as number;
+    const last = Math.min(animeList.length, num);
+    setLastRank(Math.max(firstRank, last));
+  }
 
   return (
     <>
@@ -65,18 +80,40 @@ export default function Home() {
           <header className="py-4 text-2xl text-center font-bold">
             AniList Updater
           </header>
+          <div className="flex my-5 flex-row space-x-4 items-center justify-center text-xl">
+            <Input
+              type="number"
+              className="w-24"
+              value={firstRank}
+              onChange={handleFirstRankChange}
+            />
+            <div className=""> ~ </div>
+            <Input
+              type="number"
+              className="w-24"
+              value={lastRank}
+              onChange={handleLastRankChange}
+            />
+          </div>
           <UpdateButton animeIds={animeList.map((anime) => anime["id"])} />
         </div>
         <div className="w-2/3 h-screen p-10">
           <ScrollArea className="h-full rounded-md border">
             <div className="p-4">
-              {animeList.map((anime, i) => (
-                <>
-                  <div key={anime.id} className="my-2 text-sm">
-                    {i + 1 + ": " + anime.title}
-                  </div>
-                </>
-              ))}
+              {animeList.map((anime, i) => {
+                const rank = i + 1;
+                const animeEntriesCls =
+                  rank >= firstRank && rank <= lastRank
+                    ? "my-2 text-sm bg-yellow-100"
+                    : "my-2 text-sm";
+                return (
+                  <>
+                    <div key={anime.id} className={animeEntriesCls}>
+                      {i + 1 + ": " + anime.title}
+                    </div>
+                  </>
+                );
+              })}
               <div ref={ref}>{loading && <p>Loading...</p>}</div>
             </div>
           </ScrollArea>
