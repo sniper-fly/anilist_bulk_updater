@@ -7,11 +7,12 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useEffect, useState } from "react";
 import { extractAnimeInfo } from "./extractAnimeInfo";
 import { AnimeInfo } from "./types";
+import { MediaSort } from "@/graphql/graphql";
 
 const LIST_POPULAR_ANIME = gql(`
-  query LIST_POPULAR_ANIME($page: Int) {
+  query LIST_POPULAR_ANIME($page: Int, $sort: [MediaSort]) {
     Page(page: $page, perPage: 50) {
-      media(sort: POPULARITY_DESC, type: ANIME, countryOfOrigin: JP) {
+      media(sort: $sort, type: ANIME, countryOfOrigin: JP, format_not_in: [MUSIC]) {
         id
         title {
           native
@@ -30,9 +31,11 @@ export default function Home() {
     let ignore = false;
 
     (async () => {
-      for (let i = 1; i <= 1; i++) {
+      for (let i = 1; i <= 5; i++) {
         console.log(i);
-        const { data } = await listAnime({ variables: { page: i } });
+        const { data } = await listAnime({
+          variables: { page: i, sort: MediaSort.ScoreDesc },
+        });
         if (!data) return;
         if (!ignore) {
           setAnimeList((prev) => [...prev, ...extractAnimeInfo(data)]);
