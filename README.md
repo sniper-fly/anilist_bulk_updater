@@ -2,6 +2,8 @@
 
 AniListのPopularなアニメをランキングで一覧表示し、順位の範囲を指定して一括追加ができるアプリです。
 
+![Screenshot from 2024-07-25 18-04-29](https://github.com/user-attachments/assets/96d1dc90-5441-4a32-8f7f-24fc57867d51)
+
 [AnimeMusicQuiz](https://animemusicquiz.com/)で人気アニメの曲を指定して遊びたいけれど、AniListがない、という方に便利です。
 
 個人用につくったやっつけアプリですが、localhostでも、Vercelでも動作します。
