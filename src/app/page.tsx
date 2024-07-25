@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { extractAnimeInfo } from "./extractAnimeInfo";
 import { AnimeInfo } from "./types";
 import { MediaSort } from "@/graphql/graphql";
+import { useInView } from "react-intersection-observer";
 
 const LIST_POPULAR_ANIME = gql(`
   query LIST_POPULAR_ANIME($page: Int, $sort: [MediaSort]) {
@@ -23,30 +24,26 @@ const LIST_POPULAR_ANIME = gql(`
 `);
 
 export default function Home() {
+  const [offset, setOffset] = useState(0);
+  const { ref, inView } = useInView();
   const [listAnime, { loading, error, data }] =
     useLazyQuery(LIST_POPULAR_ANIME);
   const [animeList, setAnimeList] = useState<AnimeInfo[]>([]);
 
+  async function loadMoreAnime() {
+    const { data } = await listAnime({
+      variables: { page: offset + 1, sort: MediaSort.ScoreDesc },
+    });
+    if (!data) return;
+    setAnimeList((prev) => [...prev, ...extractAnimeInfo(data)]);
+    setOffset((prev) => prev + 1);
+  }
+
   useEffect(() => {
-    let ignore = false;
-
-    (async () => {
-      for (let i = 1; i <= 5; i++) {
-        console.log(i);
-        const { data } = await listAnime({
-          variables: { page: i, sort: MediaSort.ScoreDesc },
-        });
-        if (!data) return;
-        if (!ignore) {
-          setAnimeList((prev) => [...prev, ...extractAnimeInfo(data)]);
-        }
-      }
-    })();
-
-    return () => {
-      ignore = true;
-    };
-  }, []);
+    if (inView) {
+      loadMoreAnime();
+    }
+  }, [inView]);
 
   return (
     <main className="flex flex-row">
@@ -66,7 +63,7 @@ export default function Home() {
                 </div>
               </>
             ))}
-            {loading && <p>Loading...</p>}
+            <div ref={ref}>{loading && <p>Loading...</p>}</div>
           </div>
         </ScrollArea>
       </div>
