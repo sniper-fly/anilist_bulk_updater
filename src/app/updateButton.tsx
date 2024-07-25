@@ -2,10 +2,14 @@
 
 import updater from "./updater";
 
-export default function UpdateButton() {
+type Props = {
+  animeIds: number[];
+};
+
+export default function UpdateButton({ animeIds }: Props) {
   function handleClick() {
     (async () => {
-      await updater();
+      await updater(animeIds);
     })();
   }
 

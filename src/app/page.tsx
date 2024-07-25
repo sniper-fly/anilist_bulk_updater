@@ -30,7 +30,7 @@ export default function Home() {
     let ignore = false;
 
     (async () => {
-      for (let i = 1; i <= 10; i++) {
+      for (let i = 1; i <= 1; i++) {
         console.log(i);
         const { data } = await listAnime({ variables: { page: i } });
         if (!data) return;
@@ -51,7 +51,7 @@ export default function Home() {
         <header className="py-4 text-2xl text-center font-bold">
           AniList Updater
         </header>
-        <UpdateButton />
+        <UpdateButton animeIds={animeList.map((anime) => anime["id"])} />
       </div>
       <div className="w-2/3 h-screen p-10">
         <ScrollArea className="h-full rounded-md border">
@@ -59,7 +59,7 @@ export default function Home() {
             {animeList.map((anime, i) => (
               <>
                 <div key={anime.id} className="my-2 text-sm">
-                  {(i + 1) + ": " + anime.title}
+                  {i + 1 + ": " + anime.title}
                 </div>
               </>
             ))}
